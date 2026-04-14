@@ -1,86 +1,118 @@
 # cxusage
 
-`cxusage` is a local terminal monitor for Codex usage.
+`cxusage` は、Codex の usage をターミナルで常時確認するためのローカル TUI ツールです。
 
-It polls Codex session event logs from `~/.codex/sessions/**/*.jsonl`, extracts usage and rate-limit events, and keeps the current values visible in a terminal UI.
+Codex のセッションログ `~/.codex/sessions/**/*.jsonl` をポーリングし、`token_count` / `rate_limits` イベントから 5h limit と weekly limit の残量を表示します。Codex のインタラクティブな `/status` 画面をスクレイピングするのではなく、ローカルに保存されたイベントを読み取ります。
 
-## Status
+## ステータス
 
-This is an early v1 implementation. It is local-only, single-user, and does not scrape the interactive Codex `/status` screen.
+これは初期 v1 実装です。
 
-## Install
+- ローカルマシン専用
+- 単一ユーザー向け
+- poll ベース
+- 5h limit / weekly limit の残量表示
+- チーム集約、通知、Prometheus export は未対応
 
-From source:
+## インストール
+
+Homebrew でインストールできます。
+
+```sh
+brew tap HayattiQ/tools
+brew install cxusage
+```
+
+tap せずに直接インストールする場合:
+
+```sh
+brew install HayattiQ/tools/cxusage
+```
+
+現在の Homebrew formula は source build 方式です。インストール時に Homebrew の `rust` build dependency を使ってビルドします。インストール後に実行される `cxusage` 自体は Rust の単独バイナリです。
+
+ソースから直接入れる場合:
 
 ```sh
 cargo install --path .
 ```
 
-Planned Homebrew install:
+## 使い方
 
-```sh
-brew tap <owner>/tools
-brew install cxusage
-```
-
-## Usage
-
-Check whether local Codex usage events are readable:
+まず、Codex のローカルイベントを読めるか確認します。
 
 ```sh
 cxusage doctor
 ```
 
-Start the live monitor:
+ライブ監視を開始します。
 
 ```sh
 cxusage watch
 ```
 
-Override paths or polling interval:
+`watch` は `q` または `Esc` で終了します。
+
+パスやポーリング間隔を指定する場合:
 
 ```sh
 cxusage --codex-dir ~/.codex --data-dir ~/.local/share/cxusage --interval 30s watch
 ```
 
-`watch` exits with `q` or `Esc`.
+## 表示内容
 
-## What It Reads
+`watch` では主に次の値を表示します。
 
-`cxusage` looks for Codex session JSONL files under:
+- `5h limit`: 5 時間ウィンドウの残量
+- `weekly limit`: 週次ウィンドウの残量
+- `last event`: 最後に観測した Codex usage event の時刻
+- `plan`: Codex plan type
+- `context window`: model context window
+- 直近 24 時間の 5h limit 残量トレンド
+
+例:
+
+```text
+5h limit: 92.0% left (8.0% used) / 5h, resets ...
+weekly limit: 44.0% left (56.0% used) / weekly, resets ...
+```
+
+## 読み取るデータ
+
+`cxusage` は次の Codex セッション JSONL を読みます。
 
 ```text
 ~/.codex/sessions/**/*.jsonl
 ```
 
-It extracts `token_count` events and normalizes:
+`token_count` イベントから次の値を正規化します。
 
-- 5h limit usage, remaining percent, and reset time
-- weekly limit usage, remaining percent, and reset time
+- 5h limit の使用率、残量、リセット時刻
+- weekly limit の使用率、残量、リセット時刻
 - plan type
 - model context window
-- observed timestamp
+- event timestamp
 
-The tool stores its own history and checkpoints under the app data directory. By default this is the platform data directory for `cxusage`.
+`cxusage` 自体の履歴と checkpoint は app data directory に保存します。既定では OS / Homebrew 環境のデータディレクトリ配下の `cxusage` ディレクトリを使います。
 
-## Commands
+## コマンド
 
 ```text
 cxusage watch
 cxusage doctor
 ```
 
-Global flags:
+共通フラグ:
 
 ```text
---codex-dir <path>    Codex config/data directory, defaults to ~/.codex
---data-dir <path>     cxusage app data directory
---interval <duration> Poll interval, defaults to 30s
+--codex-dir <path>    Codex の config/data directory。既定は ~/.codex
+--data-dir <path>     cxusage の app data directory
+--interval <duration> poll 間隔。既定は 30s
 ```
 
-Durations support `s`, `m`, and `h` suffixes.
+duration は `s`, `m`, `h` suffix に対応しています。
 
-## Development
+## 開発
 
 ```sh
 cargo test
@@ -88,6 +120,12 @@ cargo fmt --check
 cargo clippy --all-targets --all-features -- -D warnings
 ```
 
-## Homebrew Formula
+## Homebrew tap
 
-A source-build formula template is kept at `packaging/homebrew/cxusage.rb`. Publish it to `HayattiQ/homebrew-tools` as `Formula/cxusage.rb`.
+Homebrew tap は次のリポジトリで管理しています。
+
+```text
+https://github.com/HayattiQ/homebrew-tools
+```
+
+formula は tap 側では `Formula/cxusage.rb`、このリポジトリ内のテンプレートは `packaging/homebrew/cxusage.rb` にあります。
