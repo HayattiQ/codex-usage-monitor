@@ -1,8 +1,8 @@
 class Cxusage < Formula
   desc "Local TUI monitor for Codex usage"
   homepage "https://github.com/HayattiQ/codex-usage-monitor"
-  url "https://github.com/HayattiQ/codex-usage-monitor/archive/refs/tags/v0.1.1.tar.gz"
-  sha256 "9233bca222e259413dffb724c97a401ad6a001604d1b0b2ec0a49ef6926a655c"
+  url "https://github.com/HayattiQ/codex-usage-monitor/archive/refs/tags/v0.1.2.tar.gz"
+  sha256 "fec6bac730abd44c18b3ec37544fb9e7393cf2ac1e3a03b6043f67a5d3d5dd5d"
   license "MIT"
 
   depends_on "rust" => :build
