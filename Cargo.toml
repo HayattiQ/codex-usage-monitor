@@ -1,6 +1,6 @@
 [package]
 name = "cxusage"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 description = "A local TUI monitor for Codex usage"
 license = "MIT"
