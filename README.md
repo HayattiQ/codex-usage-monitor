@@ -1,20 +1,10 @@
 # cxusage
 
-`cxusage` は、Codex の usage をターミナルで常時確認するためのローカル TUI ツールです。
+`cxusage` は、Codex の残り usage limit をターミナルでライブ表示する TUI ツールです。
 
-Codex のセッションログ `~/.codex/sessions/**/*.jsonl` をポーリングし、`token_count` / `rate_limits` イベントから 5h limit と weekly limit の残量を表示します。Codex のインタラクティブな `/status` 画面をスクレイピングするのではなく、ローカルに保存されたイベントを読み取ります。
+Codex で作業している間、ターミナルのタブの一つで `cxusage watch` を開いておくと、5h limit と weekly limit の残りをほぼリアルタイムに確認できます。あとどれくらい使えるか、いつリセットされるかを見ながら、長めの作業でもペース配分しやすくなります。
 
 ![cxusage watch のスクリーンショット](docs/images/cxusage-watch-terminal.png)
-
-## ステータス
-
-これは初期 v1 実装です。
-
-- ローカルマシン専用
-- 単一ユーザー向け
-- poll ベース
-- 5h limit / weekly limit の残量表示
-- チーム集約、通知、Prometheus export は未対応
 
 ## インストール
 
@@ -40,12 +30,6 @@ cargo install --path .
 ```
 
 ## 使い方
-
-まず、Codex のローカルイベントを読めるか確認します。
-
-```sh
-cxusage doctor
-```
 
 ライブ監視を開始します。
 
