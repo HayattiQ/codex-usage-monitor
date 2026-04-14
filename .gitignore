@@ -1,0 +1,4 @@
+/target/
+/.superpowers/
+*.log
+.DS_Store
