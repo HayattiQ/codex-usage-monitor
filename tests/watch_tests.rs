@@ -36,6 +36,11 @@ fn watch_text_lines_show_unknown_fallbacks() {
 }
 
 #[test]
+fn watch_title_mentions_quit_keys() {
+    assert_eq!(cxusage::app::watch_title(), "cxusage (q/Esc to quit)");
+}
+
+#[test]
 fn watch_text_lines_show_left_first_labels() {
     let state = WatchState {
         latest: Some(UsageSnapshot {

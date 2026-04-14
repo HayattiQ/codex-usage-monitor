@@ -202,7 +202,7 @@ fn render_watch(frame: &mut Frame<'_>, state: &WatchState) {
 
     let current = Text::from(current_lines(state));
     frame.render_widget(
-        Paragraph::new(current).block(Block::default().title("cxusage").borders(Borders::ALL)),
+        Paragraph::new(current).block(Block::default().title(watch_title()).borders(Borders::ALL)),
         chunks[0],
     );
 
@@ -230,6 +230,10 @@ fn render_watch(frame: &mut Frame<'_>, state: &WatchState) {
 
 pub fn watch_layout_constraints() -> Vec<Constraint> {
     vec![Constraint::Length(10), Constraint::Min(7)]
+}
+
+pub fn watch_title() -> &'static str {
+    "cxusage (q/Esc to quit)"
 }
 
 fn current_lines(state: &WatchState) -> Vec<Line<'static>> {
