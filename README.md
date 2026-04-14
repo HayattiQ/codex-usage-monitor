@@ -4,6 +4,8 @@
 
 Codex のセッションログ `~/.codex/sessions/**/*.jsonl` をポーリングし、`token_count` / `rate_limits` イベントから 5h limit と weekly limit の残量を表示します。Codex のインタラクティブな `/status` 画面をスクレイピングするのではなく、ローカルに保存されたイベントを読み取ります。
 
+![cxusage watch のスクリーンショット](docs/images/cxusage-watch-terminal.png)
+
 ## ステータス
 
 これは初期 v1 実装です。
