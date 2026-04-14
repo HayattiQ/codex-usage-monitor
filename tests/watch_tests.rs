@@ -1,8 +1,9 @@
 use chrono::{TimeZone, Utc};
 use cxusage::{
-    app::{WatchState, watch_text_lines},
+    app::{WatchState, watch_layout_constraints, watch_text_lines},
     model::{UsageSnapshot, UsageWindow},
 };
+use ratatui::layout::Constraint;
 use std::time::Duration;
 
 #[test]
@@ -121,4 +122,12 @@ fn watch_state_is_stale_after_two_intervals() {
 
     assert!(!state.is_stale(Utc.with_ymd_and_hms(2026, 4, 14, 8, 0, 10).unwrap()));
     assert!(state.is_stale(Utc.with_ymd_and_hms(2026, 4, 14, 8, 0, 11).unwrap()));
+}
+
+#[test]
+fn watch_layout_removes_help_and_reserves_more_usage_rows() {
+    assert_eq!(
+        watch_layout_constraints(),
+        vec![Constraint::Length(10), Constraint::Min(7)]
+    );
 }

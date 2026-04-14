@@ -197,11 +197,7 @@ fn render_watch(frame: &mut Frame<'_>, state: &WatchState) {
     let area = frame.area();
     let chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Length(8),
-            Constraint::Length(7),
-            Constraint::Min(5),
-        ])
+        .constraints(watch_layout_constraints())
         .split(area);
 
     let current = Text::from(current_lines(state));
@@ -230,11 +226,10 @@ fn render_watch(frame: &mut Frame<'_>, state: &WatchState) {
             .style(Style::default().fg(Color::Cyan)),
         chunks[1],
     );
+}
 
-    let help =
-        Paragraph::new("Press q or Esc to quit. Run `cxusage doctor` if the source looks empty.")
-            .block(Block::default().title("Help").borders(Borders::ALL));
-    frame.render_widget(help, chunks[2]);
+pub fn watch_layout_constraints() -> Vec<Constraint> {
+    vec![Constraint::Length(10), Constraint::Min(7)]
 }
 
 fn current_lines(state: &WatchState) -> Vec<Line<'static>> {
