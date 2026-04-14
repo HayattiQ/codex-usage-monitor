@@ -90,4 +90,4 @@ cargo clippy --all-targets --all-features -- -D warnings
 
 ## Homebrew Formula
 
-A formula template is kept at `packaging/homebrew/cxusage.rb`. Release automation should replace the version and SHA256 values before publishing to `<owner>/homebrew-tools`.
+A source-build formula template is kept at `packaging/homebrew/cxusage.rb`. Publish it to `HayattiQ/homebrew-tools` as `Formula/cxusage.rb`.
