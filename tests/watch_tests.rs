@@ -1,6 +1,6 @@
-use chrono::{TimeZone, Utc};
+use chrono::{FixedOffset, TimeZone, Utc};
 use cxusage::{
-    app::{WatchState, watch_layout_constraints, watch_text_lines},
+    app::{WatchState, format_datetime_with_offset, watch_layout_constraints, watch_text_lines},
     model::{UsageSnapshot, UsageWindow},
 };
 use ratatui::layout::Constraint;
@@ -95,12 +95,19 @@ fn watch_text_lines_show_last_event_only() {
 
     let lines = watch_text_lines(&state, Utc.with_ymd_and_hms(2026, 4, 14, 8, 0, 11).unwrap());
 
-    assert!(
-        lines
-            .iter()
-            .any(|line| line == "last event: 2026-04-14 08:00:00 UTC")
-    );
+    assert!(lines.iter().any(|line| line.starts_with("last event: ")));
     assert!(!lines.iter().any(|line| line.starts_with("last update:")));
+}
+
+#[test]
+fn formats_timestamp_for_jst_offset() {
+    let timestamp = Utc.with_ymd_and_hms(2026, 4, 14, 8, 0, 0).unwrap();
+    let jst = FixedOffset::east_opt(9 * 60 * 60).unwrap();
+
+    assert_eq!(
+        format_datetime_with_offset(timestamp, jst),
+        "2026-04-14 17:00:00 +09:00"
+    );
 }
 
 #[test]

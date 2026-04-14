@@ -67,7 +67,7 @@ cxusage --codex-dir ~/.codex --data-dir ~/.local/share/cxusage --interval 30s wa
 
 - `5h limit`: 5 時間ウィンドウの残量
 - `weekly limit`: 週次ウィンドウの残量
-- `last event`: 最後に観測した Codex usage event の時刻
+- `last event`: 最後に観測した Codex usage event の時刻。PC のローカルタイムゾーンで表示
 - `plan`: Codex plan type
 - `context window`: model context window
 - 直近 24 時間の 5h limit 残量トレンド

@@ -5,7 +5,7 @@ use crate::{
     store::HistoryStore,
 };
 use anyhow::{Context, bail};
-use chrono::{DateTime, Duration as ChronoDuration, Utc};
+use chrono::{DateTime, Duration as ChronoDuration, FixedOffset, Local, Utc};
 use clap::Parser;
 use crossterm::{
     event::{self, Event, KeyCode},
@@ -256,7 +256,10 @@ pub fn watch_text_lines(state: &WatchState, now: DateTime<Utc>) -> Vec<String> {
             "plan: {}",
             snapshot.plan_type.as_deref().unwrap_or("unknown")
         ),
-        format!("last event: {}", snapshot.observed_at),
+        format!(
+            "last event: {}",
+            format_datetime_local(snapshot.observed_at)
+        ),
         format!("5h limit: {}", format_window_left(&snapshot.primary)),
         format!("weekly limit: {}", format_window_left(&snapshot.secondary)),
         format!(
@@ -285,7 +288,7 @@ fn format_window_left(window: &UsageWindow) -> String {
         .unwrap_or_else(|| "unknown window".to_string());
     let resets_at = window
         .resets_at
-        .map(|value| value.to_string())
+        .map(format_datetime_local)
         .unwrap_or_else(|| "unknown reset".to_string());
 
     format!("{left} ({used}) / {window_minutes}, resets {resets_at}")
@@ -312,7 +315,7 @@ fn print_doctor_report(report: &DoctorReport) {
         "latest event: {}",
         report
             .latest_event_at
-            .map(|value| value.to_string())
+            .map(format_datetime_local)
             .unwrap_or_else(|| "none".to_string())
     );
     println!("parse errors: {}", report.parse_errors);
@@ -321,6 +324,20 @@ fn print_doctor_report(report: &DoctorReport) {
 
 fn ok(value: bool) -> &'static str {
     if value { "ok" } else { "missing" }
+}
+
+fn format_datetime_local(value: DateTime<Utc>) -> String {
+    value
+        .with_timezone(&Local)
+        .format("%Y-%m-%d %H:%M:%S %:z")
+        .to_string()
+}
+
+pub fn format_datetime_with_offset(value: DateTime<Utc>, offset: FixedOffset) -> String {
+    value
+        .with_timezone(&offset)
+        .format("%Y-%m-%d %H:%M:%S %:z")
+        .to_string()
 }
 
 fn parse_interval(value: &str) -> anyhow::Result<Duration> {
